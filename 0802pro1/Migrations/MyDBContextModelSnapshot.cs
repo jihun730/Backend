@@ -247,6 +247,10 @@ namespace _0802pro1.Migrations
                 {
                     b.HasBaseType("Microsoft.AspNetCore.Identity.IdentityUser");
 
+                    b.Property<string>("UserNickname")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
                     b.HasDiscriminator().HasValue("MyIdentityUser");
                 });
 
