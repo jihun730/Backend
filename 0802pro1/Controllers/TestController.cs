@@ -18,6 +18,12 @@ namespace _0802pro1.Controllers
         }
 
         [HttpGet]
+        public IActionResult Signalr()
+        {
+            return View("Signalr");
+        }
+
+        [HttpGet]
         public IActionResult Index()
         {
             return View();

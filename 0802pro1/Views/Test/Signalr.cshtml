@@ -1,0 +1,39 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div class="container">
+    @*사용자 : <input type="text" id="user">*@
+    메세지 : <input type="text" id="message">
+    <button id="send">보내기</button>
+    <div class="row">
+        <ul id="messageList"></ul>
+    </div>
+</div>
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/6.0.1/signalr.js"></script>
+<script>
+    var connection = new signalR.HubConnectionBuilder().withUrl("/sensorhub").build();
+    // 받을 때
+    connection.on("ReceiveCamera1", function (message) {
+        var li = document.createElement("li");
+        document.getElementById("messageList").appendChild(li);
+        li.textContent = message;
+    });
+    //연결 시 성공, 오류 메세지 콘솔로 띄우기
+    connection.start().then(function () {
+        console.log("연결 성공");
+    }).catch(function (err) {
+        console.log("연결 실패 : " + err.toString());
+    });
+    // 보낼때
+    document.getElementById('send').addEventListener('click', function (event) {
+        //var user = document.getElementById('user').value;
+        var message = document.getElementById('message').value;
+        connection.invoke("SendCamera1", message).catch(function (err) {
+            console.log("전송 실패 : " + err.toString());
+        });
+        event.preventDefault();
+    });
+</script>

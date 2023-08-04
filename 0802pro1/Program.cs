@@ -1,4 +1,5 @@
 using _0802pro1.Data;
+using _0802pro1.Hubs;
 using _0802pro1.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -25,6 +26,9 @@ builder.Services.AddIdentity<MyIdentityUser, IdentityRole>(
     .AddEntityFrameworkStores<MyDBContext>()
     .AddDefaultTokenProviders();
 
+// SignalR ºô´õ
+builder.Services.AddSignalR();
+
 
 
 var app = builder.Build();
@@ -46,4 +50,8 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Mes}/{action=Index}/{id?}");
 
-app.Run();
+// MabHub ¿¬°á
+app.MapHub<SensorHub>("/sensorhub");
+app.MapHub<RailHub>("/railhub");
+
+app.Run("http://10.10.10.204:5098");
