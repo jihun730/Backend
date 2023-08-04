@@ -17,6 +17,7 @@ namespace _0802pro1.Controllers
             _signInManager = signInManager;
         }
 
+        string nowUser = "";
 
         [HttpGet]
         public IActionResult Login()
@@ -59,5 +60,34 @@ namespace _0802pro1.Controllers
             await _signInManager.SignOutAsync();
             return Redirect("/mes/index");
         }
+
+        [HttpGet]
+        public IActionResult FindPassword()
+        {
+            return View("FindPassword");
+        }
+
+        [HttpPost]
+        public IActionResult FindPassword(string userName)
+        {
+            if (userName != null)
+            {
+                return Redirect("/auth/resetpassword");
+            }
+            return Redirect("/mes/index");
+        }
+
+        [HttpGet]
+        public IActionResult ResetPassword()
+        {
+            return View("ResetPassword");
+        }
+
+        [HttpPost]
+        public IActionResult ResetPassword(string newPassword)
+        {
+            return Redirect("/auth/login");
+        }
+
     }
 }
