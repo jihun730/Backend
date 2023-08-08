@@ -1,0 +1,56 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+
+<h1>Test SignalR Receive Image Page</h1>
+<div>
+    <img id="receiveImage" alt="this image" />
+</div>
+<div>
+    <img id="origin" src="/img/불.png"
+</div>
+<div>
+    <img id="receiveImage2" alt="this image2" />
+</div>
+
+<div>
+    <button class="btn btn-dark" id="send">보내기</button>
+
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/6.0.1/signalr.js"></script>
+<script>
+    var connection = new signalR.HubConnectionBuilder().withUrl("/SensorHub").build();
+
+    connection.on("ReceiveCamera1", function (message) {
+        document.getElementById("receiveImage").src = "data:image/jpeg;base64," + message;
+    });
+    connection.on("ReceiveCamera1", function (message) {
+        document.getElementById("receiveImage2").src = message;
+    });
+
+    connection.start().then(function () {
+        console.log("연결 성공");
+    }).catch(function (err) {
+        console.log("연결 실패 : " + err.toString());
+    });
+
+    document.getElementById('send').addEventListener('click', function (event) {
+        var img = document.getElementById("origin");
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        canvas.width = img.width;
+        canvas.height = img.height;
+        ctx.drawImage(img, 0, 0);
+        var base64 = canvas.toDataURL('image/*');
+
+        connection.invoke("SendCamera1", base64).catch(function (err) {
+            console.log("전송 실패 : " + err.toString());
+        });
+        console.log(base64)
+        event.preventDefault();
+    });
+
+</script>

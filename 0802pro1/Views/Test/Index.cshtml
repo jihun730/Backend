@@ -1,5 +1,12 @@
-﻿
+﻿@model IEnumerable<MyIdentityUser>
 
+<div>
+    @foreach (var user in Model)
+    {
+        var test = user.UserNickname;
+        <h1>@test</h1>
+    }
+</div>
     <form action="/test/Signup" method="post">
         <input type="text" name="name" />
         <input type="password" name="pw" />

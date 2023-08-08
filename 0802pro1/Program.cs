@@ -18,6 +18,7 @@ builder.Services.AddDbContext<MyDBContext>(
         connection,
         ServerVersion.AutoDetect(connection)
         ));
+
 // identity dbcontext 연결
 builder.Services.AddIdentity<MyIdentityUser, IdentityRole>(
         // 이메일 인증 안받아도 상관 없는 옵션 추가
@@ -26,8 +27,17 @@ builder.Services.AddIdentity<MyIdentityUser, IdentityRole>(
     .AddEntityFrameworkStores<MyDBContext>()
     .AddDefaultTokenProviders();
 
+
 // SignalR 빌더
-builder.Services.AddSignalR();
+builder.Services.AddSignalR(options => options.MaximumReceiveMessageSize = 1024 * 1024 * 1024);
+//
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("MyAllowSpecificOrigins", policy =>
+    {
+        policy.WithOrigins("*").AllowAnyMethod().AllowAnyHeader();
+    });
+});
 
 
 
@@ -40,7 +50,11 @@ if (!app.Environment.IsDevelopment())
 }
 app.UseStaticFiles();
 
+
 app.UseRouting();
+
+// test 01
+app.UseCors("MyAllowSpecificOrigins");
 
 app.UseAuthentication();
 
@@ -50,7 +64,6 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Mes}/{action=Index}/{id?}");
 
-// MabHub 연결
 app.MapHub<SensorHub>("/sensorhub");
 app.MapHub<RailHub>("/railhub");
 

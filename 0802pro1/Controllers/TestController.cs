@@ -24,6 +24,14 @@ namespace _0802pro1.Controllers
         }
 
         [HttpGet]
+        public IActionResult SignalrPicture()
+        {
+            return View();
+        }
+
+
+
+        [HttpGet]
         public IActionResult Index()
         {
             return View();
