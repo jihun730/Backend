@@ -1,6 +1,7 @@
 ﻿using _0802pro1.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace _0802pro1.Controllers
 {
@@ -32,9 +33,10 @@ namespace _0802pro1.Controllers
 
 
         [HttpGet]
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            return View();
+            var users = await _userManager.Users.ToListAsync();
+            return View(users);
         }
 
         [HttpPost]
@@ -55,6 +57,7 @@ namespace _0802pro1.Controllers
         [HttpPost]
         public async Task<IActionResult> Login(string userName, string pw)
         {
+            
             var result = await _signInManager.PasswordSignInAsync(userName, pw, false, false);
             if (result.Succeeded)
             {

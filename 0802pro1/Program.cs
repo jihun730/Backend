@@ -4,7 +4,22 @@ using _0802pro1.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
+// test02
+var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
+
 var builder = WebApplication.CreateBuilder(args);
+
+// test02
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(name: MyAllowSpecificOrigins,
+                      policy =>
+                      {
+                          policy.WithOrigins("http://10.10.10.204:5098")
+                          .AllowAnyHeader().AllowAnyMethod().AllowCredentials();
+                      });
+});
+
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
@@ -30,14 +45,7 @@ builder.Services.AddIdentity<MyIdentityUser, IdentityRole>(
 
 // SignalR ºô´õ
 builder.Services.AddSignalR(options => options.MaximumReceiveMessageSize = 1024 * 1024 * 1024);
-//
-builder.Services.AddCors(options =>
-{
-    options.AddPolicy("MyAllowSpecificOrigins", policy =>
-    {
-        policy.WithOrigins("*").AllowAnyMethod().AllowAnyHeader();
-    });
-});
+
 
 
 
@@ -53,8 +61,8 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
-// test 01
-app.UseCors("MyAllowSpecificOrigins");
+// test02
+app.UseCors(MyAllowSpecificOrigins);
 
 app.UseAuthentication();
 

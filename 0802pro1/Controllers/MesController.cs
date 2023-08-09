@@ -1,4 +1,5 @@
 ﻿using _0802pro1.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 
@@ -8,7 +9,8 @@ namespace _0802pro1.Controllers
     {
         private readonly ILogger<MesController> _logger;
 
-        public MesController(ILogger<MesController> logger)
+        public MesController(
+            ILogger<MesController> logger)
         {
             _logger = logger;
         }

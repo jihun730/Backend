@@ -1,14 +1,27 @@
-﻿@{
+﻿@model IEnumerable<MyIdentityUser>
 
+@{
     var imagePath = "";
 
-    if (@User.Identity.Name == "kim")
-    {
+    if (@User.Identity.Name == "kim"){
         imagePath = "kim";
     } else if(User.Identity.Name == "park") {
         imagePath = "park";
     }
+
 }
+
+@*@{
+    var nowUser = "";
+    @foreach (var user in Model)
+    {
+        if (user.UserName == User.Identity.Name)
+        {
+            nowUser = user.UserNickname;
+            break;
+        }
+    }
+}*@
 
 
 <div id="page-top">
@@ -491,10 +504,9 @@
                                    
                                 </div>
                                 <!-- Card Body -->
-                                <div class="card-body"><img src="" id="cameraImage1"/>
-                                    <img src="" id="aiImage">
+                                <div class="card-body">
+                                    <img src="" id="cameraImage1">
                                     <div class="chart-area">
-                                        <!-- <canvas id="myAreaChart"></canvas> -->
                                     </div>
                                 </div>
                             </div>
@@ -509,7 +521,7 @@
                                 </div>
                                 <!-- Card Body -->
                                 <div class="card-body">
-                                    <img src="" id="aiImage">
+                                    <img src="" id="cameraImage2">
                                     <div class="chart-area">
                                     </div>
                                 </div>
@@ -673,5 +685,123 @@
     <!-- Page level custom scripts -->
     @*<script src="/js/demo/chart-area-demo.js"></script>
     <script src="/js/demo/chart-pie-demo.js"></script>*@
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/6.0.1/signalr.js"></script>
+    <script>
+        //카메라1
+        var currentStatus = 0;
+        var camera1 = new signalR.HubConnectionBuilder().withurl("/sensorhub").build();
+        camrea1.on("ReceiveCamera1", function (message) {
+            document.getElementById("cameraImage1").src = "data:image/jpeg;base64" + message;
+        });
+        camrea1.start().then(function () {
+            console.log("카메라1 연결 성공");
+        }).catch(function (err) {
+            console.log("카메라1 연결 실패 :  " + err.toString());
+        });
+
+        //카메라2
+        var currentStatus = 0;
+        var camera2 = new signalR.HubConnectionBuilder().withurl("/sensorhub").build();
+        camera2.on("ReceiveCamera2", function (message) {
+            document.getElementById("cameraImage2").src = "data:image/jpeg;base64" + message;
+        });
+        camera2.start().then(function () {
+            console.log("카메라2 연결 성공");
+        }).catch(function (err) {
+            console.log("카메라2 연결 실패 :  " + err.toString());
+        });
+        var connection10 = new signalR.HubConnectionBuilder().withurl("http://10.10.10.204:5098/sensorhub").build();
+        document.getElementById('testSend').addEventListener('click', function (event) {
+            var message = document.getElementById('testMessage').value;
+            connection10.invoke("SendCamera1", message).catch(function (err) {
+                console.log("실패 : " + err.toString());
+            });
+
+            //레일1
+            var railconnection1 = new signalR.HubConnectionBuilder().withUrl("/railhub").build();
+            railconnection1.on("RailStatus", function (status) {
+                if (status == "on") {
+                    document.getElementById("rail1").src = "img/레일 이미지";
+                } else {
+                    document.getElementById("rail1").src = "img/레일 이미지";
+                }
+            });
+            railconnection1.start().then(function () {
+                console.log("레일1 연결 성공");
+            }).catch(function (err) {
+                console.log("레일1 연결 실패 : " + err.toString());
+            });
+            async function sendCmd() {
+                try {
+                    var status = document.getElementById("rail1").src.split("/")[4].split(".")[0];
+                    console.log(status);
+                    if (status == "off") {
+                        document.getElementById("rail1").src = "img/레일 이미지";
+                        status = "on"
+                    } else {
+                        document.getElementById("rail1").src = "img/레일 이미지";
+                        status = "off"
+                    }
+                    await railconnection1.invoke("SendLedStatus2", status);
+                } catch (err) {
+                    console.error(err);
+                }
+            }
+
+            //레일2
+            var railconnetion2 = new signalR.HubConnectionBuilder().withUrl("/railhub").build();
+            railconnetion2.on("RailStatus", function (status) {
+                if (status == "on") {
+                    document.getElementById("rail2").src = "img/레일 이미지";
+                } else {
+                    document.getElementById("rail2").src = "img/레일 이미지";
+                }
+            });
+            railconnetion2.start().then(function () {
+                console.log("레일2 연결 성공");
+            }).catch(function (err) {
+                console.log("레일2 연결 실패 : " + err.toString());
+            });
+            async function sendCmd() {
+                try {
+                    var status = document.getElementById("rail2").src.split("/")[4].split(".")[0];
+                    console.log(status);
+                    if (status == "off") {
+                        document.getElementById("rail2").src = "img/레일 이미지";
+                        status = "on"
+                    } else {
+                        document.getElementById("rail2").src = "img/레일 이미지";
+                        status = "off"
+                    }
+                    await railconnetion2.invoke("SendLedStatus2", status);
+                } catch (err) {
+                    console.error(err);
+                }
+            }
+
+            //초음파센서1
+            var waveconnection1 = new signalR.HubConnectionBuilder().withUrl("/sensorhub").build();
+            waveconnection1.on("ReceiveWave1", function (value) {
+                document.getElementById("wave1").innerText = value;
+            });
+            waveconnection1.start().then(function () {
+                console.log("초음파 센서 연결 성공");
+            }).catch(function (err) {
+                console.log("초음파 센서 연결 실패 : " + err.toString());
+            });
+
+            //초음파센서2
+            var waveconnection2 = new signalR.HubConnectionBuilder().withUrl("/sensorhub").build();
+            waveconnection2.on("ReceiveWave2", function (value) {
+                document.getElementById("wave2").innerText = value;
+            });
+            waveconnection2.start().then(function () {
+                console.log("초음파 센서 연결 성공");
+            }).catch(function (err) {
+                console.log("초음파 센서 연결 실패 : " + err.toString());
+            });
+        });
+    </script>
 
 </div>
