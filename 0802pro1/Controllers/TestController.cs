@@ -1,4 +1,5 @@
-﻿using _0802pro1.Models;
+﻿using _0802pro1.Data;
+using _0802pro1.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -7,13 +8,16 @@ namespace _0802pro1.Controllers
 {
     public class TestController : Controller
     {
+        private readonly MyDBContext dbContext;
         private readonly UserManager<MyIdentityUser> _userManager;
         private readonly SignInManager<MyIdentityUser> _signInManager;
 
         public TestController(
+            MyDBContext dbContext,
             UserManager<MyIdentityUser> userManager, 
             SignInManager<MyIdentityUser> signInManager)
         {
+            this.dbContext = dbContext;
             _userManager = userManager;
             _signInManager = signInManager;
         }
@@ -39,6 +43,7 @@ namespace _0802pro1.Controllers
             return View(users);
         }
 
+
         [HttpPost]
         public async Task<IActionResult> Signup(string name, string pw, string email)
         {
@@ -50,8 +55,9 @@ namespace _0802pro1.Controllers
         }
 
         [HttpGet]
-        public IActionResult Login() {
-            return View("login");
+        public IActionResult Login() 
+        {
+            return View();
         }
 
         [HttpPost]
@@ -66,6 +72,35 @@ namespace _0802pro1.Controllers
             }
 
             return Redirect("/test/login");
+        }
+
+        [HttpGet]
+        public IActionResult Colors()
+        {
+            return View();
+        }
+
+        [HttpGet]
+        public IActionResult Borders()
+        {
+            return View();
+        }
+
+        [HttpGet]
+        public IActionResult Animations()
+        {
+            return View();
+        }
+
+        [HttpGet]
+        public IActionResult Other()
+        {
+            return View();
+        }
+        [HttpGet]
+        public IActionResult IndexTest()
+        {
+            return View();
         }
     }
 }

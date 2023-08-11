@@ -27,12 +27,10 @@ builder.Services.AddControllersWithViews();
 
 // db context 연결
 var connection = builder.Configuration.GetConnectionString("DefaultConnection");
-
 builder.Services.AddDbContext<MyDBContext>(
-    options => options.UseMySql(
-        connection,
-        ServerVersion.AutoDetect(connection)
-        ));
+    options => options.UseMySql(connection, ServerVersion.AutoDetect(connection))
+    );
+
 
 // identity dbcontext 연결
 builder.Services.AddIdentity<MyIdentityUser, IdentityRole>(

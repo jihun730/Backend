@@ -22,10 +22,11 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/6.0.1/signalr.js"></script>
 <script>
-    var connection = new signalR.HubConnectionBuilder().withUrl("/SensorHub").build();
+    var connection = new signalR.HubConnectionBuilder().withUrl("/sensorhub").build();
 
     connection.on("ReceiveCamera1", function (message) {
         document.getElementById("receiveImage").src = "data:image/jpeg;base64," + message;
+        console.log(message);
     });
     connection.on("ReceiveCamera1", function (message) {
         document.getElementById("receiveImage2").src = message;

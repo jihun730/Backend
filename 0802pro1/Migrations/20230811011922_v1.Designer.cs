@@ -11,7 +11,7 @@ using _0802pro1.Data;
 namespace _0802pro1.Migrations
 {
     [DbContext(typeof(MyDBContext))]
-    [Migration("20230803071731_v1")]
+    [Migration("20230811011922_v1")]
     partial class v1
     {
         /// <inheritdoc />

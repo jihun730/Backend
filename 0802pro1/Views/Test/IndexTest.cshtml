@@ -1,22 +1,4 @@
-﻿@model IEnumerable<ProductModel>
-
-@{
-    var nowUser = "";
-    foreach (var user in Model)
-    {
-        if (User.Identity.Name != null)
-        {
-            nowUser = user.MyIdentityUserId;
-            Console.WriteLine(nowUser);
-            break;
-        }
-    }
-}
-
-
-
-
-<!-- Begin Page Content -->
+﻿<!-- Begin Page Content -->
 <div class="container-fluid">
 
     <!-- Page Heading -->
@@ -39,20 +21,7 @@
                             <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
                                 종이컵 개수
                             </div>
-                            <div class="card-footer d-flex align-items-center justify-content-between">
-                                @{
-                                    foreach (var pro in Model)
-                                    {
-                                        if (pro.ProductName == "정상 종이컵")
-                                        {
-                                            var normalCupQuan = pro.ProductQuantity;
-                                            <div id="normalQuantity" class="small text-black">@normalCupQuan</div>
-                                        }
-                                    }
-                                }
-
-
-                            </div>
+                            <div class="card-footer d-flex align-items-center justify-content-between"></div>
                         </div>
                         <div class="col-auto">
                         </div>
@@ -268,7 +237,7 @@
 
 </div>
 <!-- /.container-fluid -->
-        </div>
+            </div>
 <!-- End of Main Content -->
 
 

@@ -14,6 +14,6 @@ namespace _0802pro1.Data
         }
 
         public DbSet<ProductModel> Products { get; set; }
-
+        public DbSet<MyIdentityUser> MyIdentityUsers { get; set; }
     }
 }

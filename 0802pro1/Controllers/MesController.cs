@@ -1,34 +1,56 @@
-﻿using _0802pro1.Models;
+﻿using _0802pro1.Data;
+using _0802pro1.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using System.Diagnostics;
+using Microsoft.EntityFrameworkCore;
 
 namespace _0802pro1.Controllers
 {
     public class MesController : Controller
     {
-        private readonly ILogger<MesController> _logger;
+        private readonly MyDBContext dbContext;
+        private readonly UserManager<MyIdentityUser> userManager;
 
-        public MesController(
-            ILogger<MesController> logger)
+        public MesController(MyDBContext dbContext,
+            UserManager<MyIdentityUser> userManager)
         {
-            _logger = logger;
+            this.dbContext = dbContext;
+            this.userManager = userManager;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()    
         {
-            return View();
+            var user = await userManager.GetUserAsync(HttpContext.User);
+            Console.WriteLine("테스트 : "+user);
+            return await Task.Run(() => View(dbContext.Products.ToList()));
         }
 
         public IActionResult Privacy()
         {
+            
+            return View(dbContext.Products.ToList());
+        }
+
+        [HttpGet]
+        public IActionResult Buttons()
+        {
             return View();
         }
 
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
+
+        [HttpGet]
+        public IActionResult Test()
         {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+            return View();
         }
+
+
+        [HttpGet]
+        public IActionResult Error404()
+        {
+            return View("Error404");
+        }
+
+
     }
 }
