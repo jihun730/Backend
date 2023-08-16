@@ -1,6 +1,6 @@
 ﻿@model IEnumerable<ProductModel>
 
-@{
+@*@{
     var nowUser = "";
     foreach (var user in Model)
     {
@@ -11,7 +11,7 @@
             break;
         }
     }
-}
+}*@
 
 
 
@@ -72,7 +72,16 @@
                             </div>
                             <div class="card-footer d-flex align-items-center justify-content-between">
                                 <div id="normalQuantity" class="small text-black">
-                                    0
+                                    @{
+                                        foreach (var pro in Model)
+                                        {
+                                            if (pro.ProductName == "불량 종이컵")
+                                            {
+                                                var poolCupQuan = pro.ProductQuantity;
+                                                <div id="normalQuantity" class="small text-black">@poolCupQuan</div>
+                                            }
+                                        }
+                                    }
                                 </div>
                             </div>
                         </div>
@@ -196,16 +205,21 @@
                         <div class="col-lg-6 mb-4">
                             <div class="card bg-primary text-white shadow">
                                 <div class="card-body">
-                                    Primary
-                                    <div class="text-white-50 small">#4e73df</div>
+                                    Test Add
+                                    <div class="text-white-50 small">
+                                        <button class="btn-block" onClick="location.href='/mes/add'">Test</button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                         <div class="col-lg-6 mb-4">
                             <div class="card bg-success text-white shadow">
-                                <div class="card-body">
+                                <div class="card-body" onClick="location.href='/mes/update'">
                                     Success
-                                    <div class="text-white-50 small">#1cc88a</div>
+                                    <div class="text-white-50 small">
+                                        <p></p>
+                                        @*<button class="btn-facebook" onClick="location.href='/mes/update'">Test</button>*@
+                                    </div>
                                 </div>
                             </div>
                         </div>

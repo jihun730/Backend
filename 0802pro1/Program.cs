@@ -73,4 +73,4 @@ app.MapControllerRoute(
 app.MapHub<SensorHub>("/sensorhub");
 app.MapHub<RailHub>("/railhub");
 
-app.Run("http://10.10.10.204:5098");
+app.Run();

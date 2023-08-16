@@ -7,5 +7,6 @@ namespace _0802pro1.Models
     {
         public string UserNickname { get; set; }
 
+        public List<ProductModel> Products { get; } = new List<ProductModel>();
     }
 }

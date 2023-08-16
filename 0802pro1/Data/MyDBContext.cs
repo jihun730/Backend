@@ -6,14 +6,15 @@ using Microsoft.EntityFrameworkCore.Diagnostics;
 
 namespace _0802pro1.Data
 {
-    public class MyDBContext : IdentityDbContext
+    public class MyDBContext : IdentityDbContext<MyIdentityUser>
     {
         public MyDBContext(DbContextOptions<MyDBContext> options) : base(options)
         {
-
         }
 
         public DbSet<ProductModel> Products { get; set; }
-        public DbSet<MyIdentityUser> MyIdentityUsers { get; set; }
+
+
+
     }
 }
