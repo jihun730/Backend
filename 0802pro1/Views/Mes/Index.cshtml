@@ -39,7 +39,7 @@
                             <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
                                 종이컵 개수
                             </div>
-                            <div class="card-footer d-flex align-items-center justify-content-between">
+                            <div id="normal1" class="card-footer d-flex align-items-center justify-content-between">
                                 @{
                                     foreach (var pro in Model)
                                     {
@@ -50,8 +50,6 @@
                                         }
                                     }
                                 }
-
-
                             </div>
                         </div>
                         <div class="col-auto">
@@ -70,19 +68,19 @@
                             <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
                                 불량품 개수
                             </div>
-                            <div class="card-footer d-flex align-items-center justify-content-between">
-                                <div id="normalQuantity" class="small text-black">
-                                    @{
-                                        foreach (var pro in Model)
+                            <div id="error2" class="card-footer d-flex align-items-center justify-content-between">
+
+                                @{
+                                    foreach (var pro in Model)
+                                    {
+                                        if (pro.ProductName == "불량 종이컵")
                                         {
-                                            if (pro.ProductName == "불량 종이컵")
-                                            {
-                                                var poolCupQuan = pro.ProductQuantity;
-                                                <div id="normalQuantity" class="small text-black">@poolCupQuan</div>
-                                            }
+                                            var poolCupQuan = pro.ProductQuantity;
+                                            <div id="normalQuantity" class="small text-black">@poolCupQuan</div>
                                         }
                                     }
-                                </div>
+                                }
+
                             </div>
                         </div>
                         <div class="col-auto">
@@ -168,13 +166,12 @@
             <div class="card shadow mb-4">
                 <!-- Card Header - Dropdown -->
                 <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                    <h6 class="m-0 font-weight-bold text-primary">서보 모터 확인 카메라</h6>
+                    <h6 class="m-0 font-weight-bold text-primary">종이컵 종류 파이 차트</h6>
                 </div>
                 <!-- Card Body -->
                 <div class="card-body">
-                    <img src="" id="cameraImage2" alt="servo-zone">
-                    <div class="chart-area">
-                    </div>
+                    <canvas id="pie-chart" width="800" height="450">
+                    </canvas>
                 </div>
             </div>
         </div>
@@ -204,30 +201,32 @@
                         <!-- Illustrations 카드 내용 -->
                         <div class="col-lg-6 mb-4">
                             <div class="card bg-primary text-white shadow">
-                                <div class="card-body">
+                                <div style="cursor:pointer" class="card-body" onClick="location.href='/mes/add'">
                                     Test Add
                                     <div class="text-white-50 small">
-                                        <button class="btn-block" onClick="location.href='/mes/add'">Test</button>
+                                        <p></p>
+                                        @* <button class="btn-block" onClick="location.href='/mes/add'">Test</button> *@
                                     </div>
                                 </div>
                             </div>
                         </div>
                         <div class="col-lg-6 mb-4">
                             <div class="card bg-success text-white shadow">
-                                <div class="card-body" onClick="location.href='/mes/update'">
-                                    Success
+                                <div style="cursor:pointer" class="card-body" onClick="location.href='/mes/update'">
+                                    Test Update
                                     <div class="text-white-50 small">
                                         <p></p>
-                                        @*<button class="btn-facebook" onClick="location.href='/mes/update'">Test</button>*@
                                     </div>
                                 </div>
                             </div>
                         </div>
                         <div class="col-lg-6 mb-4">
                             <div class="card bg-info text-white shadow">
-                                <div class="card-body">
-                                    Info
-                                    <div class="text-white-50 small">#36b9cc</div>
+                                <div class="card-body" onClick="location.href='/mes/reset'">
+                                    Test Reset
+                                    <div class="text-white-50 small">
+                                        <p></p>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -296,9 +295,69 @@
         console.log(message);
     });
 
+    // ㅇㅇㅇ
+    connection.on("ReceiveStatus", function (status) {
+        console.log("status : " + status);
+        if (status == "0.0") {
+            cup++;
+        } else if (status == "1.0") {
+            pressed++;
+        } else {
+            torn++;
+        }
+        console.log("cup : " + cup.toString());
+        console.log("pressed : " + pressed.toString());
+        console.log("torn : " + torn.toString());
+        cupChart.data.datasets[0].data = [cup, pressed, torn];
+    });
+
     connection.start().then(function () {
         console.log("연결 성공");
     }).catch(function (err) {
         console.log("연결 실패 : " + err.toString());
+    });
+
+    function sendRequest() {
+        var httpRequest = new XMLHttpRequest();
+        httpRequest.onreadystatechange = function () {
+            if (httpRequest.readyState == XMLHttpRequest.DONE && httpRequest.status == 200) {
+                console.log(httpRequest.responseText);
+                var res = JSON.parse(httpRequest.responseText)
+                document.getElementById("normal1").innerHTML = res.nomal1
+                document.getElementById("error2").innerHTML = res.error2
+
+                document.getElementById("text").innerHTML = httpRequest.responseText;
+            }
+        };
+        // GET 방식으로 요청을 보내면서 데이터를 동시에 전달함.
+        httpRequest.open("GET", "/mes/get", true);
+        httpRequest.send();
+    }
+
+    getData = setInterval(function () {
+        sendRequest();
+    }, 3000);
+
+</script>
+
+@* 차트 관련 스크립트 *@
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
+<script>
+    cupChart = new Chart(document.getElementById("pie-chart"), {
+        type: 'pie',
+        data: {
+            labels: ["Good cups", "Pressed cups", "Torn cups"],
+            datasets: [{
+                label: "Numbers",
+                backgroundColor: ["#3cba9f", "#3e95cd", "#c45850"],
+                data: [0, 0, 0]
+            }]
+        },
+        options: {
+            title: {
+                display: true,
+                text: 'Types of paper cups'
+            }
+        }
     });
 </script>

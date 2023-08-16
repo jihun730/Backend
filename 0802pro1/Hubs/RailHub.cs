@@ -8,9 +8,9 @@ namespace _0802pro1.Hubs
         {
             await Clients.All.SendAsync("ReceiveRail1", message);
         }
-        public async Task SendRail2(string message)
+        /*public async Task SendRail2(string message)
         {
             await Clients.All.SendAsync("ReceiveRail2", message);
-        }
+        }*/
     }
 }

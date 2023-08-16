@@ -7,3 +7,48 @@
         <a href="/test/login/"></a>
     </form>
 
+    <div>
+        <input type="text" id ="message" placeholder="1 또는 0"/>
+        <button id ="send" class="btn btn-primary">보내기</button>
+        <input type="text" id="rmessage" />
+    </div>
+
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/6.0.1/signalr.js"></script>
+<script>
+    var connection = new signalR.HubConnectionBuilder().withUrl("/sensorhub").build();
+    var connection2 = new signalR.HubConnectionBuilder().withUrl("/railhub").build();
+
+    connection.on("ReceiveCamera1", function (message) {
+        document.getElementById("camera1").src = "data:image/jpeg;base64," + message;
+        console.log(message);
+    });
+
+
+    document.getElementById('send').addEventListener('click', function (event) {
+        //var user = document.getElementById('user').value;
+        var message = document.getElementById('message').value;
+        connection2.invoke("SendRail1", message).catch(function (err) {
+            console.log("전송 실패 : " + err.toString());
+        });
+        console.log("전송 완료");
+        event.preventDefault();
+    });
+
+
+    connection.start().then(function () {
+        console.log("연결 성공");
+    }).catch(function (err) {
+        console.log("연결 실패 : " + err.toString());
+    });
+
+    connection2.start().then(function () {
+        console.log("연결 성공2");
+    }).catch(function (err) {
+        console.log("연결 실패2 : " + err.toString());
+    });
+
+
+
+</script>
